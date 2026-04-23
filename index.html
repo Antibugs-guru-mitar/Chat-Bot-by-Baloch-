@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tedi-GPT 🐐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: white; margin: 0; }
+   .chat { max-width: 600px; margin: 0 auto; padding: 20px; }
+   .msg { margin: 10px 0; padding: 12px; border-radius: 12px; }
+   .user { background: #22c55e; margin-left: 20%; text-align: right; }
+   .bot { background: #1e293b; margin-right: 20%; }
+    #input { width: 70%; padding: 12px; border: none; border-radius: 8px; }
+    #send { padding: 12px 20px; background: #22c55e; border: none; border-radius: 8px; color: white; }
+   .header { text-align: center; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Meaaah 🐐 Tedi-GPT</h1>
+    <p>Mitar kuch bhi pooch le 💚</p>
+  </div>
+  <div class="chat" id="chat">
+    <div class="msg bot">Meaaah 🐐 Main Tedi-GPT. Sawal pooch mitar 😂💚</div>
+  </div>
+  <div style="position: fixed; bottom: 0; width: 100%; background: #0f172a; padding: 20px; text-align: center;">
+    <input id="input" placeholder="Yahan likh mitar...">
+    <button id="send" onclick="sendMsg()">Bhej</button>
+  </div>
+
+<script>
+async function sendMsg() {
+  const input = document.getElementById('input');
+  const chat = document.getElementById('chat');
+  const userText = input.value;
+  if(!userText) return;
+
+  chat.innerHTML += `<div class="msg user">${userText}</div>`;
+  input.value = '';
+  chat.innerHTML += `<div class="msg bot" id="thinking">Tedi soch rahi... 🐐💭</div>`;
+
+  const res = await fetch('/api/ask', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({question: userText})
+  });
+  const data = await res.json();
+
+  document.getElementById('thinking').remove();
+  chat.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
+</body>
+</html>
